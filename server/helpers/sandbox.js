@@ -1,5 +1,5 @@
 // require('dotenv').config()
-process.env.GEMINI_API_KEY='AIzaSyAnAxn7aTqxF_jz0ePGcZbkJonEUWpVuR8'
+process.env.GEMINI_API_KEY=''
 
 const { VirtualTryOn } = require('./gemini')
 
