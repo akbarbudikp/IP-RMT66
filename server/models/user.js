@@ -1,5 +1,5 @@
 'use strict';
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt')
 const {
   Model
 } = require('sequelize');
@@ -15,24 +15,43 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
+    fullName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Full name is required' },
+        notEmpty: { msg: 'Full name is required' }
+      }
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: { msg: 'Email already exists'},
+      unique: { msg: 'Email already exists' },
       validate: {
-        notEmpty: { msg: 'Email is required'},
-        notNull: { msg: 'Email is required'},
-        isEmail: { msg: 'Invalid email format'}
+        notNull: { msg: 'Email is required' },
+        notEmpty: { msg: 'Email is required' },
+        isEmail: { msg: 'Invalid email format' }
       }
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notEmpty: { msg: 'Password is required'},
-        notNull: { msg: 'Password is required'},
+        notNull: { msg: 'Password is required' },
+        notEmpty: { msg: 'Password is required' },
       }
-    }
+    },
+    role: {
+      type: DataTypes.ENUM('customer', 'admin'),
+      allowNull: false,
+      defaultValue: 'customer'
+    },
+    phoneNumber: DataTypes.STRING,
+    address: DataTypes.TEXT,
+    profilePicture: DataTypes.STRING,
+    imageUrl: DataTypes.STRING,
+    imageMimeType: DataTypes.STRING,
+
   }, {
     sequelize,
     modelName: 'User',

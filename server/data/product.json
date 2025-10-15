@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Kemeja Katun Oxford Putih",
+    "description": "Kemeja putih klasik dari bahan katun Oxford premium. Cocok untuk acara formal maupun kasual. Bahan adem dan tidak mudah kusut.",
+    "price": 249900.00,
+    "stock": 75,
+    "imageUrl": "https://images.unsplash.com/photo-1589310243389-633422883533?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    "categoryId": 1,
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "name": "Kemeja Flanel Kotak-Kotak",
+    "description": "Kemeja flanel lengan panjang dengan motif kotak-kotak timeless. Bahan lembut dan hangat, ideal untuk cuaca sejuk.",
+    "price": 299900.00,
+    "stock": 50,
+    "imageUrl": "https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    "categoryId": 1,
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "name": "Kaos Polos Hitam Premium",
+    "description": "Kaos basic hitam dari 100% katun combed 30s. Nyaman dipakai sehari-hari dan mudah dipadukan dengan outfit apapun.",
+    "price": 149900.00,
+    "stock": 120,
+    "imageUrl": "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    "categoryId": 2,
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "name": "Kaos Grafis 'Explore More'",
+    "description": "Tunjukkan jiwa petualangmu dengan kaos grafis 'Explore More'. Sablon berkualitas tinggi yang tidak mudah luntur.",
+    "price": 179900.00,
+    "stock": 80,
+    "imageUrl": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    "categoryId": 2,
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "name": "Jaket Denim Klasik Biru",
+    "description": "Jaket denim esensial dengan warna medium wash. Desain klasik yang tidak pernah ketinggalan zaman.",
+    "price": 499900.00,
+    "stock": 40,
+    "imageUrl": "https://images.unsplash.com/photo-1543076499-8f4b0b7ef7a6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    "categoryId": 3,
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "name": "Hoodie Polos Abu-abu",
+    "description": "Hoodie bahan fleece yang tebal dan lembut. Menjaga Anda tetap hangat dengan gaya kasual yang modern.",
+    "price": 349900.00,
+    "stock": 65,
+    "imageUrl": "https://images.unsplash.com/photo-1556156166-e32e0d1b1981?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    "categoryId": 3,
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "name": "Celana Jeans Slim-Fit",
+    "description": "Celana jeans dengan potongan slim-fit yang modern. Bahan stretch untuk kenyamanan bergerak sepanjang hari.",
+    "price": 449900.00,
+    "stock": 55,
+    "imageUrl": "https://images.unsplash.com/photo-1602293589914-9e296ba2a7c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    "categoryId": 4,
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "name": "Celana Chino Khaki",
+    "description": "Pilihan cerdas untuk gaya smart-casual. Celana chino berwarna khaki ini mudah dipadukan dengan kemeja atau kaos.",
+    "price": 379900.00,
+    "stock": 70,
+    "imageUrl": "https://images.unsplash.com/photo-1604176354204-9268737828e4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    "categoryId": 4,
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "name": "Gaun Musim Panas Bunga",
+    "description": "Gaun ringan dengan motif bunga yang ceria. Sempurna untuk liburan atau acara santai di luar ruangan.",
+    "price": 399900.00,
+    "stock": 30,
+    "imageUrl": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    "categoryId": 5,
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  }
+]

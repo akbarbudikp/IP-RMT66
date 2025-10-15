@@ -1,6 +1,6 @@
-const { GoogleGenAI } = require("@google/genai") 
+const { GoogleGenAI } = require("@google/genai")
 const fs = require("fs");
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY});
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 async function fileToGenerativePart(url) {
 
@@ -15,6 +15,15 @@ async function fileToGenerativePart(url) {
 
 async function VirtualTryOn(person_image, product_image, height, weight, product_size) {
     try {
+        const config = {
+            responseModalities: [
+                'IMAGE',
+                'TEXT',
+            ],
+            imageConfig: {
+                aspectRatio: '3:4',
+            },
+        };
 
         const prompt = `
                         task:
@@ -34,7 +43,7 @@ async function VirtualTryOn(person_image, product_image, height, weight, product
                                 weight: ${weight}
   
                         background:
-                            value: "A clean, minimalist studio with bright natural light" 
+                            value: "A clean, minimalist studio with white bright natural light" 
 
                         output:
                             prompt: >
@@ -57,7 +66,7 @@ async function VirtualTryOn(person_image, product_image, height, weight, product
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash-image",
-
+            config: config,
             contents: [
                 {
                     text: prompt
@@ -86,4 +95,4 @@ async function VirtualTryOn(person_image, product_image, height, weight, product
     }
 }
 
-module.exports = {VirtualTryOn}
+module.exports = { VirtualTryOn }

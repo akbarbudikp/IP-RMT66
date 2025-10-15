@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Kemeja & Blus",
+    "slug": "kemeja-dan-blus",
+    "description": "Koleksi kemeja formal, kasual, dan blus modern untuk setiap kesempatan.",
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "name": "Kaos",
+    "slug": "kaos",
+    "description": "Berbagai macam kaos grafis dan polos dengan bahan katun premium yang nyaman.",
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "name": "Jaket & Outerwear",
+    "slug": "jaket-dan-outerwear",
+    "description": "Tetap hangat dan stylish dengan jaket denim, hoodie, dan outerwear lainnya.",
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "name": "Celana",
+    "slug": "celana",
+    "description": "Temukan celana jeans, chino, dan celana bahan yang pas untuk gaya formal maupun santai.",
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  },
+  {
+    "id": 5,
+    "name": "Gaun & Rok",
+    "slug": "gaun-dan-rok",
+    "description": "Tampil menawan dengan pilihan gaun pesta, kasual, dan rok berbagai model.",
+    "createdAt": "2023-10-28T10:00:00.000Z",
+    "updatedAt": "2023-10-28T10:00:00.000Z"
+  }
+]
