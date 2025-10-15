@@ -1,34 +1,27 @@
-import { GoogleGenAI } from "@google/genai";
-import fs from "fs";
+const { GoogleGenAI } = require("@google/genai") 
+const fs = require("fs");
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY});
 
-const ai = new GoogleGenAI(process.env.GOOGLE_API_KEY);
+async function fileToGenerativePart(url) {
 
-function fileToGenerativePart(path, mimeType) {
-  return {
-    inlineData: {
-      data: Buffer.from(fs.readFileSync(path)).toString("base64"),
-      mimeType,
-    },
-  };
+    const pdfResp = await fetch(url)
+        .then((response) => response.arrayBuffer());
+
+    return {
+        data: Buffer.from(pdfResp).toString("base64"),
+        mimeType: "image/jpeg"
+    };
 }
 
-async function VirtualTryOn(person_image, height, weight, product_size) {
-  try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-image",
+async function VirtualTryOn(person_image, product_image, height, weight, product_size) {
+    try {
 
-      contents: [
-        {
-            role: 'user',
-            parts: [
-                {
-                    text: `
+        const prompt = `
                         task:
                             name: virtual_try_on
                             description: "Apply a fashion product onto a person image with realistic fitting and an optional custom background."
 
                         inputs:
-                            person_image: ${person_image}
                             description: "Full body image of a real person. This is the base image."
   
                         product_image:
@@ -59,13 +52,38 @@ async function VirtualTryOn(person_image, height, weight, product_size) {
   
                         specs:
                             resolution: "high"
-                            style: "photorealistic"`
+                            style: "photorealistic"
+                        `
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash-image",
+
+            contents: [
+                {
+                    text: prompt
+                },
+                {
+                    inlineData: await fileToGenerativePart(product_image)
+                },
+                {
+                    inlineData: await fileToGenerativePart(person_image)
                 }
             ]
+        });
+
+        for (const part of response.candidates[0].content.parts) {
+            if (part.text) {
+                console.log(part.text);
+            } else if (part.inlineData) {
+                const imageData = part.inlineData.data;
+                const buffer = Buffer.from(imageData, "base64");
+                fs.writeFileSync("gemini-native-image.png", buffer);
+                console.log("Image saved as gemini-native-image.png");
+            }
         }
-      ]
-    });
-  } catch (error) {
-    console.log(error);
-  }
+    } catch (error) {
+        console.log(error);
+    }
 }
+
+module.exports = {VirtualTryOn}
