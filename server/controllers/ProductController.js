@@ -39,7 +39,7 @@ class ProductController {
 
             const product = await Product.create({ name, description, price, stock, imageUrl, categoryId })
 
-            res.status(200).json(product)
+            res.status(201).json(product)
         } catch (error) {
             next(error)
         }
@@ -75,7 +75,7 @@ class ProductController {
                 throw { name: "NotFound", message: "Product not found" }
             }
 
-            await product.destroy(product)
+            await product.destroy()
 
             res.status(200).json({ message: `Product with id: ${product.id} deleted successfully` })
         } catch (error) {

@@ -5,12 +5,13 @@ const { User } = require('../models')
 class UserController {
     static async register(req, res, next) {
         try {
-            const { email, password } = req.body
+            const { fullName, email, password } = req.body
 
-            const user = await User.create({ email, password })
+            const user = await User.create({ fullName, email, password })
 
             res.status(201).json({
                 id: user.id,
+                "full name": user.fullName,
                 email: user.email
             })
         } catch (error) {
@@ -37,7 +38,7 @@ class UserController {
 
             const access_token = signToken({ id: user.id })
 
-            res.set(200).json({access_token})
+            res.status(200).json({access_token})
         } catch (error) {
             next(error)
         }
