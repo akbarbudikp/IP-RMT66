@@ -21,7 +21,10 @@ app.post('/login', UserController.login)
 
 // products
 app.get('/products', ProductController.showAll)
+app.post('/products', ProductController.add)
 app.get('/products/:id', ProductController.detail)
+app.put('/products/:id', ProductController.edit)
+app.delete('/products/:id', ProductController.delete)
 
 app.use(errorHandler)
 
