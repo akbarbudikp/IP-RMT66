@@ -78,7 +78,11 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Product',
     hooks: {
       beforeValidate: (product, options) => {
-        if (product.isNewRecord && !product.sku) {
+        console.log('--- HOOK beforeValidate RUNNING ---');
+        console.log('Is New Record?', product.isNewRecord);
+        console.log('Product Name:', product.name);
+
+        if (product.isNewRecord && !product.sku && product.name) {
           const namePrefix = product.name.substring(0, 3).toUpperCase()
           product.sku = `${namePrefix}-${nanoid()}`;
         }

@@ -34,6 +34,9 @@ class ProductController {
     }
 
     static async add(req, res, next) {
+        console.log('--- ISI REQ.BODY SAAT MASUK CONTROLLER ---');
+        console.log(req.body);
+        console.log('3. req.body di dalam CONTROLLER:', req.body);
         try {
             const { name, description, price, stock, imageUrl, categoryId } = req.body
 
@@ -41,6 +44,8 @@ class ProductController {
 
             res.status(201).json(product)
         } catch (error) {
+            console.log('--- VALIDATION ERROR OCCURRED ---');
+            console.log(JSON.stringify(error, null, 2));
             next(error)
         }
     }

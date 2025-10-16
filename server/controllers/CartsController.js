@@ -67,6 +67,10 @@ class CartController {
             const cart = await Cart.findOne({ where: { userId } })
             const item = await CartItem.findByPk(cartItemId)
 
+            if (!cart) {
+                return res.status(404).json({ message: 'Cart not found' });
+            }
+
             if (!item || item.cartId !== cart.id) {
                 throw { name: 'Forbidden', message: 'You are not authorized to remove this item' };
             }
@@ -79,3 +83,5 @@ class CartController {
         }
     }
 }
+
+module.exports = CartController

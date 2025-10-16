@@ -22,8 +22,14 @@ class OrderController {
                 }
             })
 
-            if (!cart || cart.items.length === 0) {
-                throw { name: 'BadRequest', message: 'Your cart is empty' }
+            if (!cart || !cart.items || cart.items.length === 0) { 
+                throw { name: 'BadRequest', message: 'Your cart is empty' };
+            }
+
+            for (const item of cart.items) {
+                if (item.product.stock < item.quantity) {
+                    throw { name: 'BadRequest', message: `Insufficient stock for ${item.product.name}` };
+                }
             }
 
             const totalPrice = cart.items.reduce((total, item) => {
@@ -46,14 +52,23 @@ class OrderController {
 
             await OrderItem.bulkCreate(orderItems, { transaction: t });
 
+            for (const item of cart.items) {
+                await Product.update(
+                    { stock: sequelize.literal(`stock - ${item.quantity}`) },
+                    { where: { id: item.productId }, transaction: t }
+                );
+            }
+
             await CartItem.destroy({
-                where: { cartId: cart.id }
-            }, { transaction: t });
+                where: { cartId: cart.id },
+                transaction: t
+            });
 
             await t.commit();
 
             res.status(201).json({ message: 'Checkout successful', order: newOrder })
         } catch (error) {
+            console.error('--- CHECKOUT CRASHED ---', error); 
             await t.rollback();
             next(error)
         }

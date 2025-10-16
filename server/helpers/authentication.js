@@ -2,6 +2,7 @@ const { verifyToken } = require("../helpers/jwt");
 const { User } = require('../models')
 
 async function authentication(req, res, next) {
+  console.log('1. req.body di dalam AUTHENTICATION:', req.body);
   try {
     const { authorization } = req.headers;
 

@@ -8,10 +8,13 @@ const ProductController = require('./controllers/ProductController');
 const errorHandler = require('./middlewares/errorHandler');
 const adminOnly = require('./helpers/adminOnly');
 const authentication = require('./helpers/authentication');
+const OrderController = require('./controllers/OrdersController');
+const CartController = require('./controllers/CartsController');
 const app = express()
 const port = 3000
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -32,8 +35,19 @@ app.post('/products', adminOnly, ProductController.add)
 app.put('/products/:id', adminOnly, ProductController.edit)
 app.delete('/products/:id', adminOnly,ProductController.delete)
 
+app.get('/carts', CartController.showCart);
+app.post('/carts', CartController.addItemToCart);
+app.delete('/carts/:cartItemId', CartController.removeItemFromCart);
+
+app.get('/orders', OrderController.showOrders);
+app.post('/orders', OrderController.checkout);
+
 app.use(errorHandler)
 
-app.listen(port, () => {
-  console.log(`http://localhost:${port}`)
-})
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
+  });
+}
+
+module.exports = app;

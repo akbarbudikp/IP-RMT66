@@ -1,4 +1,7 @@
 function errorHandler(err, req, res, next) {
+    console.log('===================');
+    console.log(err)
+    console.log('===================');
     if (err.name === 'Unauthorized') {
         res.status(401).json({ message: err.message })
         return
@@ -29,7 +32,7 @@ function errorHandler(err, req, res, next) {
         return
     }
 
-    res.status(500).json({ message: 'Internal server error'})
+    res.status(500).json({ message: 'Internal Server Error'})
 }
 
 module.exports = errorHandler
