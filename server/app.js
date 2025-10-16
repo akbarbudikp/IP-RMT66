@@ -3,6 +3,7 @@ require('dotenv').config()
 const { GoogleGenAI } = require("@google/genai");
 const fs = require("node:fs");
 const express = require('express');
+const cors = require('cors')
 const UserController = require('./controllers/UserController');
 const ProductController = require('./controllers/ProductController');
 const errorHandler = require('./middlewares/errorHandler');
@@ -15,6 +16,7 @@ const port = 3000
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+app.use(cors())
 
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
