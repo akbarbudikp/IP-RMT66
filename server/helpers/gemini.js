@@ -1,5 +1,14 @@
 const { GoogleGenAI } = require("@google/genai")
 const fs = require("fs");
+const path = require('path');
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 async function fileToGenerativePart(url) {
@@ -80,18 +89,29 @@ async function VirtualTryOn(person_image, product_image, height, weight, product
             ]
         });
 
-        for (const part of response.candidates[0].content.parts) {
-            if (part.text) {
-                console.log(part.text);
-            } else if (part.inlineData) {
-                const imageData = part.inlineData.data;
-                const buffer = Buffer.from(imageData, "base64");
-                fs.writeFileSync("gemini-native-image.png", buffer);
-                console.log("Image saved as gemini-native-image.png");
-            }
+        const imagePart = response.candidates[0].content.parts.find(part => part.inlineData);
+
+        if (!imagePart) {
+            throw new Error("AI did not return a valid image.");
         }
+
+        const imageData = imagePart.inlineData.data;
+        const buffer = Buffer.from(imageData, "base64");
+        
+        const tempFilePath = path.join(__dirname, `temp_gemini_image_${Date.now()}.png`);
+        fs.writeFileSync(tempFilePath, buffer);
+
+        const uploadResult = await cloudinary.uploader.upload(tempFilePath, {
+            folder: "virtual-try-on-results"
+        });
+
+        fs.unlinkSync(tempFilePath);
+        
+        const finalResultUrl = uploadResult.secure_url;
+        return finalResultUrl;
     } catch (error) {
         console.log(error);
+        throw error
     }
 }
 

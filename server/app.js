@@ -16,6 +16,9 @@ const port = 3000
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
@@ -28,7 +31,15 @@ app.post('/login', UserController.login)
 app.get('/products', ProductController.showAll)
 app.get('/products/:id', ProductController.detail)
 
+app.post('/orders/midtrans/notification', OrderController.handleMidtransNotification);
+
 app.use(authentication)
+
+app.post(
+    '/products/:id/virtual-try-on', 
+    upload.single('userImage'), 
+    ProductController.virtualTryOn
+);
 
 // products with login and role admin
 app.post('/products', adminOnly, ProductController.add)
@@ -40,7 +51,7 @@ app.post('/carts', CartController.addItemToCart);
 app.delete('/carts/:cartItemId', CartController.removeItemFromCart);
 
 app.get('/orders', OrderController.showOrders);
-app.post('/orders', OrderController.checkout);
+app.post('/orders/checkout', OrderController.checkout);
 
 app.use(errorHandler)
 
