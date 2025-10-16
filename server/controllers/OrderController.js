@@ -1,0 +1,72 @@
+const { Order, OrderItem, Cart, CartItem, Product, sequelize } = require('../models');
+
+class OrderController {
+
+    static async checkout(req, res, next) {
+        const t = await sequelize.transaction();
+
+        try {
+            const userId = req.user.id
+            const shippingAddress = req.body
+
+            const cart = await Cart.findOne({
+                where: { userId },
+                include: {
+                    model: CartItem,
+                    as: 'items',
+                    include: { model: Product, as: 'product' }
+                }
+            })
+
+            if (!cart || cart.items.length === 0) {
+                throw { name: 'BadRequest', message: 'Your cart is empty' }
+            }
+
+            const totalPrice = cart.items.reduce((total, item) => {
+                return total + (item.quantity * item.product.price)
+            }, 0);
+
+            const newOrder = await Order.create({
+                userId,
+                totalPrice,
+                shippingAddress,
+                status: 'pending'
+            }, { transaction: t })
+
+            const orderItems = cart.items.map(item => ({
+                orderId: newOrder.id,
+                productId: item.productId,
+                quantity: item.quantity,
+                priceAtPurchase: item.product.price
+            }))
+
+            await t.commit();
+
+            res.status(201).json({ message: 'Checkout successful', order: newOrder })
+        } catch (error) {
+            await t.rollback();
+            next(error)
+        }
+    }
+
+    static async showOrder(req, res, next) {
+        try {
+            const userId = req.user.id
+
+            const orders = await Order.findAll({
+                where: { userId },
+                include: {
+                    model: OrderItem,
+                    as: 'items',
+                    include: { model: Product, as: 'product' }
+                }
+            })
+
+            res.status(200).json(orders);
+        } catch (error) {
+            next(error)
+        }
+    }
+}
+
+module.exports = OrderController;
