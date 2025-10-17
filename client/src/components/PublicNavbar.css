@@ -1,0 +1,10 @@
+.navbar-nav .nav-link {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #000 !important;
+  border-bottom: 2px solid #000;
+}
