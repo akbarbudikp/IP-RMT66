@@ -68,7 +68,7 @@ class CartController {
             const item = await CartItem.findByPk(cartItemId)
 
             if (!cart) {
-                throw { name: 'NotFound', message: 'Cart not found' };
+                return res.status(404).json({ message: 'Cart not found' });
             }
 
             if (!item || item.cartId !== cart.id) {

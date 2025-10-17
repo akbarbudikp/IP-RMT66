@@ -11,8 +11,8 @@ const ProductController = require('./controllers/ProductController');
 const errorHandler = require('./middlewares/errorHandler');
 const adminOnly = require('./helpers/adminOnly');
 const authentication = require('./helpers/authentication');
-const OrderController = require('./controllers/OrdersController');
-const CartController = require('./controllers/CartsController');
+const OrderController = require('./controllers/OrderController');
+const CartController = require('./controllers/CartController');
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -29,6 +29,7 @@ app.get('/', (req, res) => {
 
 // register & login
 app.post('/register', UserController.register)
+app.post('/google-login', UserController.googleLogin)
 app.post('/login', UserController.login)
 
 // products
