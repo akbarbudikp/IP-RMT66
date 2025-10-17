@@ -42,7 +42,7 @@ app.use(authentication)
 app.post(
     '/products/:id/virtual-try-on', 
     upload.single('userImage'), 
-    ProductController.virtualTryOn
+    ProductController.featureVirtualTryOn
 );
 
 // products with login and role admin

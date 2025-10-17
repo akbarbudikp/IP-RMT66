@@ -1,7 +1,7 @@
 const { Product } = require('../models')
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs/promises');
-const { VirtualTryOn } = require('../helpers/gemini');
+const { virtualTryOn } = require('../helpers/gemini');
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -90,12 +90,20 @@ class ProductController {
         }
     }
 
-    static async virtualTryOn(req, res, next) {
+    static async featureVirtualTryOn(req, res, next) {
         const userImagePath = req.file ? req.file.path : null;
         try {
             const { id: productId } = req.params;
             const { height, weight, product_size } = req.body;
             const userImageFile = req.file;
+
+            console.log('Received virtual try-on request with data:', {
+                productId,
+                height,
+                weight,
+                product_size,
+                userImageFile: userImageFile ? userImageFile.originalname : null
+            });
 
             if (!userImageFile) {
                 throw { name: 'BadRequest', message: 'User image is required' };
@@ -118,9 +126,11 @@ class ProductController {
                 folder: "user-uploads" 
             });
 
+            console.log('User image uploaded to Cloudinary:', userImageUploadResult.secure_url);
+
             const userImageUrl = userImageUploadResult.secure_url;
 
-            const resultImageUrl = await VirtualTryOn(
+            const resultImageUrl = await virtualTryOn(
                 userImageUrl,
                 product.imageUrl,
                 height,
@@ -133,6 +143,7 @@ class ProductController {
                 resultUrl: resultImageUrl
             });
         } catch (error) {
+            console.log(error);
             next(error);
         } finally {
             if (userImagePath) {

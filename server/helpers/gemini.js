@@ -22,7 +22,7 @@ async function fileToGenerativePart(url) {
     };
 }
 
-async function VirtualTryOn(person_image, product_image, height, weight, product_size) {
+async function virtualTryOn(person_image, product_image, height, weight, product_size) {
     try {
         const config = {
             responseModalities: [
@@ -73,6 +73,13 @@ async function VirtualTryOn(person_image, product_image, height, weight, product
                             style: "photorealistic"
                         `
 
+                        console.log(product_image, '<<<<<<<<<<< product image');
+                        console.log(person_image, '<<<<<<<<<<< person image');
+                        console.log(height, '<<<<<<<<<<< height');
+                        console.log(weight, '<<<<<<<<<<< weight');
+                        console.log(product_size, '<<<<<<<<<<< product size');
+                        
+
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash-image",
             config: config,
@@ -91,6 +98,8 @@ async function VirtualTryOn(person_image, product_image, height, weight, product
 
         const imagePart = response.candidates[0].content.parts.find(part => part.inlineData);
 
+        console.log(imagePart, '<<<<<< imagePart');
+        
         if (!imagePart) {
             throw new Error("AI did not return a valid image.");
         }
@@ -108,6 +117,7 @@ async function VirtualTryOn(person_image, product_image, height, weight, product
         fs.unlinkSync(tempFilePath);
         
         const finalResultUrl = uploadResult.secure_url;
+        console.log(finalResultUrl, '<<<<<<<<<< finalResultUrl');
         return finalResultUrl;
     } catch (error) {
         console.log(error);
@@ -115,4 +125,4 @@ async function VirtualTryOn(person_image, product_image, height, weight, product
     }
 }
 
-module.exports = { VirtualTryOn }
+module.exports = { virtualTryOn }
