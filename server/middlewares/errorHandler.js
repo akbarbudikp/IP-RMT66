@@ -32,6 +32,10 @@ function errorHandler(err, req, res, next) {
         return
     }
 
+    if (err.name === "GoogleAuthError") {
+        res.status(401).json({ message: 'Invalid google token'})
+    }
+
     res.status(500).json({ message: 'Internal Server Error'})
 }
 

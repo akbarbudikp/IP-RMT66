@@ -36,6 +36,32 @@ export default function DetailPage() {
         fetchProduct();
     }, [id])
 
+    const handleAddToCart = async (productId) => {
+        try {
+            const response = await http({
+                method: 'POST',
+                url: '/carts',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`
+                },
+                data: {
+                    productId,
+                    quantity: 1
+                }
+            })
+
+            alert('Item berhasil ditambahkan ke keranjang!');
+        } catch (error) {
+            console.error("Gagal menambahkan item:", error)
+
+            if (error.response && error.response.status === 401) {
+                alert('Anda harus login untuk menambahkan item ke keranjang.');
+            } else {
+                alert('Gagal menambahkan item ke keranjang.');
+            }
+        }
+    }
+
     const renderContent = () => {
         if (isLoading) {
             return (
@@ -79,8 +105,12 @@ export default function DetailPage() {
                                 </Card.Text>
 
                                 <div className="d-grid gap-2 mt-3">
-                                    <Button variant="dark" size="lg">
-                                        Add to Cart
+                                    <Button
+                                        variant="dark"
+                                        className="mt-2"
+                                        onClick={() => handleAddToCart(product.id)}
+                                    >
+                                        Add to Bag
                                     </Button>
                                     <Button variant="outline-dark" size="lg" onClick={handleShowTryOn}>
                                         Try On

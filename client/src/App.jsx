@@ -5,7 +5,9 @@ import HomePage from './pages/pub/HomePage'
 import Register from './pages/pub/Register';
 import Login from './pages/pub/Login';
 import DetailPage from './pages/pub/DetailPage';
-import TryonPage from './components/Tryon';
+import Cart from './pages/pub/Cart';
+import CheckoutPage from './pages/pub/CheckoutPage';
+import OrderPage from './pages/pub/OrderPage';
 
 function App() {
 
@@ -18,6 +20,9 @@ function App() {
         <Route path='/login' element={<Login />} />
 
         <Route path='/products/:id' element={<DetailPage />} />
+        <Route path='/carts' element={<Cart />} />
+        <Route path='checkout' element={<CheckoutPage />} />
+        <Route path='orders' element={<OrderPage />} />
       </Routes>
     </>
   )

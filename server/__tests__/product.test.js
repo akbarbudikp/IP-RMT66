@@ -51,19 +51,6 @@ beforeAll(async () => {
             updatedAt: new Date(),
         },
     ]);
-
-    //   await queryInterface.bulkInsert('Products', [
-    //     {
-    //       id: 1,
-    //       name: 'Smartphone',
-    //       price: 999,
-    //       stock: 50,
-    //       categoryId: 1,
-    //       imageUrl: 'http://example.com/smartphone.jpg',
-    //       createdAt: new Date(),
-    //       updatedAt: new Date(),
-    //     },
-    //   ]);
 });
 
 beforeEach(async () => {
@@ -115,7 +102,6 @@ describe('ProductController', () => {
         it('should succeed with a valid adminToken', async () => {
             const newProduct = { name: 'Laptop', price: 999, stock: 30, categoryId: 1, imageUrl: 'http://example.com/laptop.jpg' };
             const res = await request(app).post('/products').set('Authorization', `Bearer ${adminToken}`).send(newProduct);
-            console.log('Server Response Body:', res.body);
             expect(res.status).toBe(201);
             expect(res.body).toHaveProperty('id');
         });

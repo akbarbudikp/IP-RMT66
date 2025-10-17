@@ -1,13 +1,13 @@
 const { Product } = require('../models')
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs/promises');
-const { virtualTryOn } = require('../helpers/gemini');
+// const { virtualTryOn } = require('../helpers/gemini');
 
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
+// cloudinary.config({
+//     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//     api_key: process.env.CLOUDINARY_API_KEY,
+//     api_secret: process.env.CLOUDINARY_API_SECRET
+// });
 
 class ProductController {
 
@@ -137,6 +137,9 @@ class ProductController {
                 weight,
                 product_size
             );
+
+            console.log('Cloudinary upload result:', userImageUploadResult);
+            console.log('Virtual try-on result URL:', resultImageUrl);
 
             res.status(200).json({
                 message: 'Virtual try-on successful',

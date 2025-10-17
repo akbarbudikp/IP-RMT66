@@ -1,6 +1,7 @@
 const { signToken } = require('../helpers/jwt');
 const bcrypt = require('bcrypt')
-const { User } = require('../models')
+const { User } = require('../models');
+const { OAuth2Client } = require('google-auth-library');
 
 class UserController {
     static async register(req, res, next) {
@@ -56,11 +57,11 @@ class UserController {
                 audience: process.env.GOOGLE_CLIENT,
             });
             const payload = ticket.getPayload();
-            const userid = payload['sub'];
 
             const [user, created] = await User.findOrCreate({
                 where: { email: payload.email },
                 defaults: {
+                    fullName: payload.name,
                     password: Math.random().toString() + Date.now().toString(),
                     role: 'customer'
                 }
@@ -68,7 +69,8 @@ class UserController {
             const access_token = signToken({ id: user.id })
             res.status(200).json({ access_token })
         } catch (error) {
-            next(error)
+            console.log(error);
+            next({ name: "GoogleAuthError" });
         }
     }
 }

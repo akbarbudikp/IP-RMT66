@@ -1,35 +1,21 @@
 import { Container, Row, Col, Card, Button, Spinner, Alert } from 'react-bootstrap';
 import { useEffect } from "react";
-import { http } from "../helpers/http";
-import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../store/productSlice';
 
 export default function PublicCard() {
-    const [products, setProducts] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+
+    const { data: products, loading, error } = useSelector(state => state.product);
 
     useEffect(() => {
-        async function fetchProducts() {
-            try {
-                const response = await http({
-                    method: 'GET',
-                    url: '/products',
-                })
-
-                const data = response.data;
-                console.log(data);
-                setProducts(data);
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setIsLoading(false)
-            }
+        if (loading === 'idle') {
+            dispatch(fetchProducts());
         }
-        fetchProducts();
-    }, [])
+    }, [loading, dispatch]);
 
-    if (isLoading) {
+    if (loading === 'pending') {
         return (
             <Container className="text-center my-5">
                 <Spinner animation="border" role="status">
@@ -39,7 +25,7 @@ export default function PublicCard() {
         );
     }
 
-    if (error) {
+    if (loading === 'failed' && error) {
         return (
             <Container className="my-5">
                 <Alert variant="danger">
@@ -64,11 +50,9 @@ export default function PublicCard() {
                             />
                             <Card.Body className="d-flex flex-column">
                                 <Card.Title className="fw-bold">{product.name}</Card.Title>
-
                                 <Card.Text>
-                                    {product.description.substring(0, 50)}...
+                                    {product.description?.substring(0, 50)}...
                                 </Card.Text>
-
                                 <Link to={`/products/${product.id}`} className="mt-auto">
                                     <Button variant="dark" className="w-100">
                                         View Details
@@ -80,5 +64,5 @@ export default function PublicCard() {
                 ))}
             </Row>
         </Container>
-    )
+    );
 }

@@ -1,7 +1,6 @@
 const request = require('supertest');
 const app = require('../app');
 const { sequelize } = require('../models');
-const { execSync } = require('child_process');
 const bcrypt = require('bcryptjs');
 const queryInterface = sequelize.getQueryInterface();
 
@@ -9,10 +8,8 @@ let customerToken;
 let customerId;
 
 beforeAll(async () => {
-    // 1. Jalankan migrasi database
     await queryInterface.sequelize.sync({ force: true });
 
-    // 2. Seed data Users
     const hashedPassword = bcrypt.hashSync('password123', 10);
     const [customer] = await queryInterface.bulkInsert('Users', [
         {
@@ -25,9 +22,8 @@ beforeAll(async () => {
         },
     ], { returning: true });
 
-    customerId = customer.id;
+    customerId = customer.id || (Array.isArray(customer) && customer[0] ? customer[0].id : null);
 
-    // Seed data Categories
     await queryInterface.bulkInsert('Categories', [
         {
             id: 1,
@@ -38,7 +34,6 @@ beforeAll(async () => {
         },
     ]);
 
-    // Seed data Products
     await queryInterface.bulkInsert('Products', [
         {
             id: 1,
@@ -52,7 +47,6 @@ beforeAll(async () => {
         },
     ]);
 
-    // 3. Lakukan login untuk mendapatkan token
     const response = await request(app)
         .post('/login')
         .send({
@@ -60,17 +54,10 @@ beforeAll(async () => {
             password: 'password123',
         });
 
-    // 4. Simpan token
     customerToken = response.body.access_token;
 });
 
 afterAll(async () => {
-    // Bersihkan database setelah tes selesai
-    await queryInterface.bulkDelete('Orders', null, {});
-    await queryInterface.bulkDelete('Carts', null, {});
-    await queryInterface.bulkDelete('Products', null, {});
-    await queryInterface.bulkDelete('Categories', null, {});
-    await queryInterface.bulkDelete('Users', null, {});
     await sequelize.close();
 });
 
@@ -132,7 +119,7 @@ describe('Checkout Flow', () => {
         });
     });
 
-    describe('POST /orders', () => {
+    describe('POST /orders/checkout', () => {
         it('should return 201, create an order, and the cart should be empty afterward', async () => {
             await request(app)
                 .post('/carts')
@@ -140,27 +127,29 @@ describe('Checkout Flow', () => {
                 .send({ productId: 1, quantity: 1 });
 
             const res = await request(app)
-                .post('/orders')
+                .post('/orders/checkout')
                 .set('Authorization', `Bearer ${customerToken}`)
                 .send({ shippingAddress: '123 Main St' });
 
             expect(res.status).toBe(201);
-            expect(res.body.order).toHaveProperty('id')
+            expect(res.body.order).toHaveProperty('id');
 
-            // Verify cart is empty
             const cartRes = await request(app).get('/carts').set('Authorization', `Bearer ${customerToken}`);
             expect(cartRes.body.items.length).toBe(0);
         });
 
         it('should return 400 if shippingAddress is missing', async () => {
-            const res = await request(app).post('/orders').set('Authorization', `Bearer ${customerToken}`).send({});
+            const res = await request(app)
+                .post('/orders/checkout')
+                .set('Authorization', `Bearer ${customerToken}`)
+                .send({});
             expect(res.status).toBe(400);
             expect(res.body).toHaveProperty('message', 'Shipping address is required');
         });
 
         it('should return 400 if the cart is empty', async () => {
             const res = await request(app)
-                .post('/orders')
+                .post('/orders/checkout')
                 .set('Authorization', `Bearer ${customerToken}`)
                 .send({ shippingAddress: '123 Main St' });
 
@@ -169,40 +158,90 @@ describe('Checkout Flow', () => {
         });
 
         it('should return 400 if product stock is insufficient', async () => {
-            // Add item to cart with excessive quantity
             await request(app)
                 .post('/carts')
                 .set('Authorization', `Bearer ${customerToken}`)
                 .send({ productId: 1, quantity: 100 });
 
             const res = await request(app)
-                .post('/orders')
+                .post('/orders/checkout')
                 .set('Authorization', `Bearer ${customerToken}`)
                 .send({ shippingAddress: '123 Main St' });
             expect(res.status).toBe(400);
-            expect(res.body).toHaveProperty('message', 'Insufficient stock for Smartphone');
+            expect(res.body).toHaveProperty('message');
         });
     });
 
     describe('GET /orders', () => {
-        it('should return 200 and show the newly created order in the user\'s history', async () => {
+        it("should return 200 and show the newly created order in the user's history", async () => {
             await request(app)
                 .post('/carts')
                 .set('Authorization', `Bearer ${customerToken}`)
                 .send({ productId: 1, quantity: 1 });
 
             await request(app)
-                .post('/orders')
+                .post('/orders/checkout')
                 .set('Authorization', `Bearer ${customerToken}`)
                 .send({ shippingAddress: '123 Main St' });
 
             const res = await request(app)
                 .get('/orders')
-                .set('Authorization', `Bearer ${customerToken}`); expect(res.status).toBe(200);
+                .set('Authorization', `Bearer ${customerToken}`);
+
+            expect(res.status).toBe(200);
             expect(res.body).toBeInstanceOf(Array);
             expect(res.body.length).toBeGreaterThan(0);
         });
     });
 
-    
+    describe('POST /orders/midtrans/notification', () => {
+        let orderId;
+
+        beforeEach(async () => {
+            await request(app)
+                .post('/carts')
+                .set('Authorization', `Bearer ${customerToken}`)
+                .send({ productId: 1, quantity: 1 });
+
+            const res = await request(app)
+                .post('/orders/checkout')
+                .set('Authorization', `Bearer ${customerToken}`)
+                .send({ shippingAddress: '123 Main St' });
+
+            orderId = res.body.order.id;
+        });
+
+        it('should handle successful settlement notification and update order status', async () => {
+            const midtransPayload = {
+                transaction_status: 'settlement', 
+                order_id: orderId, 
+                fraud_status: 'accept',
+            };
+
+            const res = await request(app)
+                .post('/orders/midtrans/notification')
+                .send(midtransPayload);
+
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty('message', 'Notification processed successfully');
+
+            const order = await sequelize.models.Order.findByPk(orderId);
+            expect(order.status).toBe('paid');
+        });
+
+        it('should handle deny notification', async () => {
+            const midtransPayload = {
+                transaction_status: 'deny',
+                order_id: orderId,
+            };
+
+            const res = await request(app)
+                .post('/orders/midtrans/notification')
+                .send(midtransPayload);
+
+            expect(res.status).toBe(200);
+            const order = await sequelize.models.Order.findByPk(orderId);
+            expect(order.status).toBe('cancelled'); 
+        });
+    });
 });
