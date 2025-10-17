@@ -48,6 +48,8 @@ class UserController {
         try {
             const { googleToken } = req.body;
 
+            console.log("CLIENT ID DARI .ENV BACKEND:", process.env.GOOGLE_CLIENT);
+
             const client = new OAuth2Client();
             const ticket = await client.verifyIdToken({
                 idToken: googleToken,
@@ -66,7 +68,7 @@ class UserController {
             const access_token = signToken({ id: user.id })
             res.status(200).json({ access_token })
         } catch (error) {
-
+            next(error)
         }
     }
 }
